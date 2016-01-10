@@ -164,7 +164,7 @@ void setup()
   // whiteBalVal[0]=red
   // whiteBalVal[1]=green
   // whiteBalVal[2]=blue
-  unsigned char whiteBalVal[3] = {23,63,63}; // for LEDSEE 6x6cm round matrix
+  unsigned char whiteBalVal[3] = {36,63,63}; // for LEDSEE 6x6cm round matrix
   Colorduino.SetWhiteBal(whiteBalVal);
   
   
@@ -188,10 +188,22 @@ void setup()
  // to adjust white balance you can uncomment this line
  // and comment out the plasma_morph() in loop()
  // and then experiment with whiteBalVal above
-  //ColorFill(255,255,255);
+ // ColorFill(255,255,255);
+  Serial.begin(115200); 
 }
 
 void loop()
 {
   plasma_morph();
+  while(Serial.available() > 0)
+  {
+     char var = Serial.read();
+     Serial.println(var);  
+     ColorFill(0, 0, 0); 
+     delay(2000);
+     Colorduino.FlipPage();  
+     Colorduino.SetPixel(7, 0, 100, 0, 0);
+     Colorduino.FlipPage();
+     delay(2000);
+  }
 }
