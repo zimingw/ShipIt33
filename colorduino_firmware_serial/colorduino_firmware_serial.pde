@@ -14,7 +14,7 @@ void setup()
   unsigned char whiteBalVal[3] = {33,63,63}; // for LEDSEE 6x6cm round matrix
   Colorduino.SetWhiteBal(whiteBalVal);
 
-  Serial.begin(115200);
+  Serial.begin(57600);
 }
 
 /****************************************************
