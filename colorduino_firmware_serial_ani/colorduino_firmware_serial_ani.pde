@@ -5,13 +5,10 @@
 
 PixelRGB aniBuffer [8*8*6];
 PixelRGB* pNextFrame = aniBuffer;
-byte frameCount, curFrame;
+byte frameCount = 0, curFrame = 0;
 
 void nextFrame()
-{ 
-  Serial.println("frameCount=" + frameCount);
-  Serial.println("curFrame=" + curFrame);
-  
+{
   if(frameCount == 0)return;
   
   cli();
@@ -26,6 +23,11 @@ void nextFrame()
     pNextFrame += 64; //move pointer to next frame by skipping 64 pixels.
     curFrame++;
   }  
+}
+
+// get a pixel for writing in the offscreen framebuffer
+PixelRGB *getPixel(PixelRGB* pOrigin, unsigned char x, unsigned char y) {
+  return pOrigin + (y * 8) + x;
 }
 
 void setup()
@@ -83,8 +85,8 @@ void loop()
       Serial.println("Reading red channel.");
       for (byte x = 0; x < 8; x++){
         for (byte y = 0; y < 8; y++){
-           pWrite->r = Serial.read();
-           pWrite++;
+           PixelRGB* pDraw = getPixel(pWrite, x, y);
+           pDraw->r = Serial.read();
         }
       }
     }
@@ -94,8 +96,8 @@ void loop()
       Serial.println("Reading green channel.");
       for (byte x = 0; x < 8; x++){
         for (byte y = 0; y < 8; y++){
-           pWrite->g = Serial.read(); 
-           pWrite++;
+           PixelRGB* pDraw = getPixel(pWrite, x, y);
+           pDraw->g = Serial.read();
         }
       }
     }
@@ -105,8 +107,8 @@ void loop()
       Serial.println("Reading blue channel.");
       for (byte x = 0; x < 8; x++){
         for (byte y = 0; y < 8; y++){
-           pWrite->b = Serial.read(); 
-           pWrite++;
+           PixelRGB* pDraw = getPixel(pWrite, x, y);
+           pDraw->b = Serial.read();
         }
       }
     }
@@ -116,11 +118,13 @@ void loop()
       //if colour is blue, then update display
       if (c == 2){
         frameCount++;
+        Serial.println("frameCount=" + frameCount);
+        Serial.println("curFrame=" + curFrame);
       }
     }
-   
-   nextFrame(); 
   }
+  
+  nextFrame();
 }
 
 
