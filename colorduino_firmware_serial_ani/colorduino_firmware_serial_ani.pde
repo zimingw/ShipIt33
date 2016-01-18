@@ -1,12 +1,12 @@
 #include <Colorduino.h>          //colorduino library
-
+#include <HCTimer2.h>
 #define START_OF_DATA 0x10       //data markers
 #define END_OF_DATA 0x20         //data markers
 
 PixelRGB aniBuffer [8*8*6];
 PixelRGB* pNextFrame = aniBuffer;
 byte frameCount = 0, curFrame = 0;
-
+int Counter = 0;
 void nextFrame()
 {
   if(frameCount == 0)return;
@@ -32,6 +32,7 @@ PixelRGB *getPixel(PixelRGB* pOrigin, unsigned char x, unsigned char y) {
 
 void setup()
 {
+  HCTimer2Init(T2_CLK_DIV_1024, 243);
   Colorduino.Init();
   // compensate for relative intensity differences in R/G/B brightness
   // array of 6-bit base values for RGB (0~63)
@@ -123,8 +124,16 @@ void loop()
       }
     }
   }
-  
-  nextFrame();
+}
+
+void HCTimer2()
+{
+  Counter++;
+  if(Counter == 128)
+  {
+    nextFrame();
+    Counter = 0;
+  }
 }
 
 
