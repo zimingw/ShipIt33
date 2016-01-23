@@ -30,6 +30,17 @@ PixelRGB *getPixel(PixelRGB* pOrigin, unsigned char x, unsigned char y) {
   return pOrigin + (y * 8) + x;
 }
 
+void cleanBuffer()
+{
+  PixelRGB* pWrite = aniBuffer;
+  for(int i=0; i<8*8*6; i++){
+    pWrite->r=0;
+    pWrite->g=0;
+    pWrite->b=0;
+    pWrite++;
+  }
+}
+
 void setup()
 {
   HCTimer2Init(T2_CLK_DIV_1024, 243);
@@ -42,7 +53,7 @@ void setup()
   unsigned char whiteBalVal[3] = {33,63,63}; // for LEDSEE 6x6cm round matrix
   Colorduino.SetWhiteBal(whiteBalVal);
 
-  Serial.begin(57600);
+  Serial.begin(9600);
 }
 
 /****************************************************
@@ -72,6 +83,7 @@ void loop()
     if( i == 0 ){
       //We restart a new image. 
       frameCount = 0;
+      //cleanBuffer();
     }
     
     PixelRGB* pWrite = aniBuffer;
@@ -119,8 +131,6 @@ void loop()
       //if colour is blue, then update display
       if (c == 2){
         frameCount++;
-        Serial.println("frameCount=" + frameCount);
-        Serial.println("curFrame=" + curFrame);
       }
     }
   }
